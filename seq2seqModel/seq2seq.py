@@ -780,8 +780,8 @@ if __name__ == '__main__':
     time_stamp = time.strftime("%Y-%m-%d_%H_%M")
     # with tf.Session() as sess:
     #    run_supervised_training(sess,save_params_path=PRE_TRAINED_WEIGHTS)
-    weights_from_supervised_pre_training = PRE_TRAINED_WEIGHTS
-    # weights_from_supervised_pre_training = os.path.join(SEQ2SEQ_DIR, 'learnedWeightsPreTrain', 'weights_' + time_stamp + '.ckpt')
+    #weights_from_supervised_pre_training = PRE_TRAINED_WEIGHTS
+    weights_from_supervised_pre_training = os.path.join(SEQ2SEQ_DIR, 'learnedWeightsPreTrain', 'weights_' + time_stamp + '.ckpt')
     best_weights_so_far = TRAINED_WEIGHTS_BEST
 
     OUTPUT_WEIGHTS = os.path.join(SEQ2SEQ_DIR, 'learnedWeightsWeaklySupervised', 'weights_' + time_stamp + '.ckpt')
@@ -799,9 +799,9 @@ if __name__ == '__main__':
     train_dataset = CNLVRDataSet(DataSet.TRAIN)
     dev_dataset = CNLVRDataSet(DataSet.DEV)
     test_dataset = CNLVRDataSet(DataSet.TEST)
-    test_dataset2 = CNLVRDataSet(DataSet.TEST2)
+    #test_dataset2 = CNLVRDataSet(DataSet.TEST2)
 
-    run_pre_train = False
+    run_pre_train = True
     if run_pre_train:
         # run supervised pre-training
         with tf.Session() as sess:
@@ -823,7 +823,7 @@ if __name__ == '__main__':
             train_results_by_sentence = run_model(sess, train_dataset, mode='test',
                                                   load_params_path=weights_from_supervised_pre_training,
                                                   return_sentences_results=False)
-    run_train = False  # change to True if you really want to run the whole thing...
+    run_train = True  # change to True if you really want to run the whole thing...
 
     if run_train:
         # training the weakly supervised model with weights initialized to the values learned in the supervises learning.
@@ -887,30 +887,31 @@ if __name__ == '__main__':
     if run_test:
         dev_results_by_sentence, test_results_by_sentence, test2_results_by_sentence = {}, {}, {}
 
-        # weights = os.path.join(SEQ2SEQ_DIR, 'learnedWeightsWeaklySupervised', 'weights_2017-11-01_12_21.ckpt-13')
+        #weights = os.path.join(SEQ2SEQ_DIR, 'learnedWeightsWeaklySupervised', 'weights_best_8_replacements.data-00000-of-00001')
+        weights = best_weights_so_far
 
-        # train_dataset.restart()
-        # with tf.Session() as sess:
-        #    train_results_by_sentence = run_model(sess, train_dataset, mode='test',
-        #                                        load_params_path=weights, return_sentences_results=False)
-
-        # dev_dataset.restart()
-        # with tf.Session() as sess:
-        #     dev_results_by_sentence = run_model(sess, dev_dataset, mode='test',
-        #                                         load_params_path=best_weights_so_far, return_sentences_results=False)
-        #
-        # save_sentences_test_results(dev_results_by_sentence, dev_dataset, SENTENCES_RESULTS_FILE_DEV)
-        #
-        # test_dataset.restart()
-        # with tf.Session() as sess:
-        #     test_results_by_sentence = run_model(sess, test_dataset, mode='test',
-        #                                          load_params_path=best_weights_so_far, return_sentences_results=False)
-        #
-        #     save_sentences_test_results(test_results_by_sentence, test_dataset, SENTENCES_RESULTS_FILE_TEST)
-
-        test_dataset2.restart()
+        train_dataset.restart()
         with tf.Session() as sess:
-            test_results_by_sentence = run_model(sess, test_dataset2, mode='test',
-                                                 load_params_path=best_weights_so_far, return_sentences_results=False)
+           train_results_by_sentence = run_model(sess, train_dataset, mode='test',
+                                                 load_params_path=weights, return_sentences_results=False)
 
-            save_sentences_test_results(test_results_by_sentence, test_dataset2, SENTENCES_RESULTS_FILE_TEST2)
+        dev_dataset.restart()
+        with tf.Session() as sess:
+            dev_results_by_sentence = run_model(sess, dev_dataset, mode='test',
+                                                load_params_path=best_weights_so_far, return_sentences_results=False)
+        
+        save_sentences_test_results(dev_results_by_sentence, dev_dataset, SENTENCES_RESULTS_FILE_DEV)
+       
+        test_dataset.restart()
+        with tf.Session() as sess:
+            test_results_by_sentence = run_model(sess, test_dataset, mode='test',
+                                                 load_params_path=best_weights_so_far, return_sentences_results=False)
+       
+            save_sentences_test_results(test_results_by_sentence, test_dataset, SENTENCES_RESULTS_FILE_TEST)
+
+        #test_dataset2.restart()
+        #with tf.Session() as sess:
+        #    test_results_by_sentence = run_model(sess, test_dataset2, mode='test',
+        #                                         load_params_path=best_weights_so_far, return_sentences_results=False)
+
+        #    save_sentences_test_results(test_results_by_sentence, test_dataset2, SENTENCES_RESULTS_FILE_TEST2)
