@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append('../..')
 import numpy as np
 import tensorflow as tf
 from random import shuffle
@@ -7,8 +10,9 @@ import definitions
 from data_manager import *
 from seq2seqModel.hyper_params import *
 
+
 # sents_path = None
-EMBED_DIM = 12
+EMBED_DIM = 100
 LR = 0.1
 ITERNUM = 10
 
@@ -33,6 +37,8 @@ def create_dict(sents):
                 pass
             else:
                 words_list.append(word)
+    print("Longueur du vocabulaire: ")
+    print(len(words_list))
     return words_list
 
 def index_to_one_hot(index, words_list):

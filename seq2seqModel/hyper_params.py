@@ -7,7 +7,7 @@ import definitions
 
 
 #dimensions
-WORD_EMB_SIZE = 12
+WORD_EMB_SIZE = 100
 LOG_TOKEN_EMB_SIZE = 12
 DECODER_HIDDEN_SIZE = 50
 LSTM_HIDDEN_SIZE = 30
@@ -54,7 +54,7 @@ PRINT_PARAMS = True
 #beam settings
 MAX_DECODING_LENGTH = 22 # the maximum length of a program from the beam (in number of tokens)
 MAX_STEPS = 14 # the default number of decoding steps for a program in the ebam search
-BEAM_SIZE = 40
+BEAM_SIZE = 50
 SKIP_AUTO_TOKENS = True
     # if true, tokens that are the only valid option are automatically added to the programs in the bean search,
     # in the same step.
@@ -72,7 +72,7 @@ else:
 #paths
 
 if definitions.MANUAL_REPLACEMENTS:
-    WORD_EMBEDDINGS_PATH = os.path.join(definitions.SEQ2SEQ_DIR, 'word2vec', 'embeddings_10iters_12dim')
+    WORD_EMBEDDINGS_PATH = os.path.join(definitions.SEQ2SEQ_DIR, 'word2vec', 'new_embeddings')
     PRE_TRAINED_WEIGHTS = os.path.join(definitions.ROOT_DIR, 'seq2seqModel', 'learnedWeightsPreTrain', 'trained_variables_sup_with_embeddings.ckpt')
 else:
     WORD_EMBEDDINGS_PATH = os.path.join(definitions.SEQ2SEQ_DIR, 'word2vec', 'new_embeddings')
